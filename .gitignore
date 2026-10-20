@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Arbeitskopien aus der Claude-Session
+2026*_Thailand_Reiseplan*.html
