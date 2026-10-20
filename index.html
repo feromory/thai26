@@ -230,6 +230,36 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .leg p{margin:6px 0 0;font-size:.8rem;color:var(--muted)}
 .srcs{font-size:.72rem;color:var(--muted);line-height:1.6}
 .srcs a{color:var(--sea)}
+.stsel{appearance:none;-webkit-appearance:none;font:600 .72rem var(--body);letter-spacing:.02em;padding:5px 26px 5px 10px;border-radius:99px;border:1px solid transparent;cursor:pointer;background-repeat:no-repeat;background-size:5px 5px,5px 5px;background-position:calc(100% - 13px) 50%,calc(100% - 8px) 50%;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%)}
+.stsel.st-paid,.stsel.st-booked{background-color:var(--ok-soft);color:var(--ok)}
+.stsel.st-due{background-color:var(--warn-soft);color:var(--warn)}
+.stsel.st-missing{background-color:var(--bad-soft);color:var(--bad)}
+.stsel:hover{border-color:currentColor}
+.stsel option{color:var(--fg);background:var(--card)}
+.note-text{margin-top:6px;font-size:.8rem;line-height:1.45;background:var(--gold-soft);color:var(--fg);border-radius:8px;padding:6px 9px;white-space:pre-wrap;overflow-wrap:anywhere}
+.notebtn{border:1px solid var(--line);background:var(--bg2);border-radius:7px;font-size:.7rem;padding:3px 8px;color:var(--muted);font-weight:600;white-space:nowrap}
+.notebtn:hover{color:var(--fg);border-color:var(--muted)}
+.noteedit{display:grid;gap:6px;margin-top:8px}
+.noteedit textarea{font:inherit;font-size:.85rem;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);color:var(--fg);min-height:64px;resize:vertical;width:100%}
+.noteedit .acts{display:flex;gap:6px;flex-wrap:wrap}
+.noteedit button{font-size:.75rem;font-weight:600;padding:5px 11px;border-radius:7px;border:1px solid var(--line);background:var(--card)}
+.noteedit button.save{background:var(--sea);border-color:var(--sea);color:#fff}
+.noteedit button.drop{color:var(--bad)}
+.item .side{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.item .body{min-width:0}
+.ledger .actions{display:flex;gap:4px;align-items:center;justify-content:flex-end}
+@media (max-width:560px){
+  .ledger thead{display:none}
+  .ledger tbody tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;padding:12px 14px;border-bottom:1px solid var(--line);align-items:center}
+  .ledger tbody tr:last-child{border-bottom:0}
+  .ledger tbody td{display:block;padding:0;border:0}
+  .ledger tbody td:first-child{grid-column:1/-1}
+  .ledger tbody td:nth-child(2){grid-column:1}
+  .ledger tbody td:nth-child(3){grid-column:2;grid-row:2}
+  .ledger tbody td:nth-child(4){grid-column:1/-1}
+  .ledger tbody td:nth-child(4) .actions{justify-content:flex-start}
+  .ledger tbody td:nth-child(4):has(.actions:empty){display:none}
+}
 .foot{font-size:.75rem;color:var(--muted);text-align:center;border-top:1px solid var(--line);padding-top:14px}
 .toolbar{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .toolbar button{border:1px solid var(--line);background:var(--card);padding:6px 12px;border-radius:8px;font-size:.8rem;font-weight:600}
@@ -239,8 +269,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   .stop::before{left:27px}
   .route .code{font-size:1.6rem}
   .item{grid-template-columns:24px 1fr}
-  .item .due{grid-column:2;padding-top:0}
-  .item .rm{opacity:1;grid-column:3;grid-row:1}
+  .item .side{grid-column:2;justify-content:flex-start}
+  .item .rm{opacity:1}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
@@ -250,7 +280,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   body{font-size:12px}
   .wrap{max-width:none;padding:0;gap:16px}
   .pass{background:#0f6d7a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .toolbar,.addrow,.addline,.rm,.del,.sync{display:none!important}
+  .toolbar,.addrow,.addline,.rm,.del,.sync,.notebtn,.noteedit{display:none!important}
+  .stsel{background-image:none;padding-right:10px}
   .group,.ledger,.stop,.idea,.kpi{break-inside:avoid}
   .item:hover{background:transparent}
 }
@@ -380,82 +411,82 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     <div class="sechead"><h2>Route &amp; Stationen</h2><span class="hint">Gestrichelt = noch offen</span></div>
     <div class="tl">
 
-      <div class="stop">
+      <div class="stop" data-cost="flug">
         <div class="date"><div class="dd">09</div><div class="dm">Dez · Mi</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Flug</div><h3>Deutschland → Bangkok</h3></div><span class="pill ok">bezahlt</span></div>
+          <div class="top"><div><div class="kind">Flug</div><h3>Deutschland → Bangkok</h3></div><span class="pill ok" data-pill>bezahlt</span></div>
           <p>Hin- und Rückflug zusammen gebucht.</p>
           <div class="money"><span class="amt">763 €</span><span class="pill sea">Hin + Rück</span></div>
         </div>
       </div>
 
-      <div class="stop">
+      <div class="stop" data-cost="bkk1">
         <div class="date"><div class="dd">09</div><div class="dm">– 14 Dez</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Unterkunft</div><h3>Bangkok, erste Unterkunft</h3></div><span class="pill warn">Abbuchung 27.11.</span></div>
+          <div class="top"><div><div class="kind">Unterkunft</div><h3>Bangkok, erste Unterkunft</h3></div><span class="pill warn" data-pill>Abbuchung 27.11.</span></div>
           <p>Gebucht, Betrag wird am Fr, 27.11.2026 abgebucht.</p>
           <div class="money"><span class="amt">164 €</span><span class="nights">5 Nächte · ≈ 33 €/Nacht</span></div>
         </div>
       </div>
 
-      <div class="stop open" data-check="b1">
+      <div class="stop open" data-cost="flugHin">
         <div class="date"><div class="dd">14</div><div class="dm">Dez · Mo</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Flug</div><h3>Bangkok → Krabi</h3></div><span class="pill bad" data-pill="b1">noch buchen</span></div>
+          <div class="top"><div><div class="kind">Flug</div><h3>Bangkok → Krabi</h3></div><span class="pill bad" data-pill>noch buchen</span></div>
           <p>Inlandsflug ca. 1 h 20. Abflughafen (BKK oder DMK) im Ticket prüfen.</p>
           <div class="money"><span class="amt" id="amtFlugHin">–</span><span class="pill gold">Betrag in Kosten pflegen</span></div>
         </div>
       </div>
 
-      <div class="stop">
+      <div class="stop" data-cost="krabi">
         <div class="date"><div class="dd">14</div><div class="dm">– 19 Dez</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Unterkunft</div><h3>Krabi</h3></div><span class="pill ok">bezahlt</span></div>
+          <div class="top"><div><div class="kind">Unterkunft</div><h3>Krabi</h3></div><span class="pill ok" data-pill>bezahlt</span></div>
           <p>Ao Nang, Railay, Inselhopping. Dezember ist Hochsaison an der Andamanensee.</p>
           <div class="money"><span class="amt">155 €</span><span class="nights">5 Nächte · 31 €/Nacht</span></div>
         </div>
       </div>
 
-      <div class="stop open" data-check="b7">
+      <div class="stop open" data-cost="transferLanta">
         <div class="date"><div class="dd">19</div><div class="dm">Dez · Sa</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Transfer</div><h3>Krabi → Koh Lanta</h3></div><span class="pill bad" data-pill="b7">organisieren</span></div>
+          <div class="top"><div><div class="kind">Transfer</div><h3>Krabi → Koh Lanta</h3></div><span class="pill bad" data-pill>organisieren</span></div>
           <p>Minivan mit Autofähre oder Speedboat, ca. 2–3 h. Hotel-Abholung meist buchbar.</p>
           <div class="money"><span class="amt" id="amtTransferLanta">–</span><span class="pill gold">Schätzung</span></div>
         </div>
       </div>
 
-      <div class="stop open" data-check="b4">
+      <div class="stop open" data-cost="unterkunft">
         <div class="date"><div class="dd">19</div><div class="dm">– 25 Dez</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Unterkunft</div><h3>Koh Lanta</h3></div><span class="pill bad" data-pill="b4">noch buchen</span></div>
+          <div class="top"><div><div class="kind">Unterkunft</div><h3>Koh Lanta</h3></div><span class="pill bad" data-pill>noch buchen</span></div>
           <p>Ruhige Insel, lange Strände. Inklusive Weihnachten 24.12. auf der Insel.</p>
           <div class="money"><span class="amt" id="amtUnterkunft">–</span><span class="nights">6 Nächte</span></div>
         </div>
       </div>
 
-      <div class="stop open" data-check="b2">
+      <div class="stop open" data-cost="flugRueck">
         <div class="date"><div class="dd">25</div><div class="dm">Dez · Fr</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Transfer + Flug</div><h3>Koh Lanta → Krabi → Bangkok</h3></div><span class="pill bad" data-pill="b2">noch buchen</span></div>
+          <div class="top"><div><div class="kind">Transfer + Flug</div><h3>Koh Lanta → Krabi → Bangkok</h3></div><span class="pill bad" data-pill>noch buchen</span></div>
           <p>Transfer zum Flughafen Krabi ca. 2–2,5 h, Puffer für die Fähre einplanen. Danach Flug nach Bangkok.</p>
           <div class="money"><span class="amt" id="amtFlugRueck">–</span><span class="pill sea">Flug</span><span class="amt" id="amtTransferAirport">–</span><span class="pill gold">Transfer, Schätzung</span></div>
         </div>
       </div>
 
-      <div class="stop open" data-check="b5">
+      <div class="stop open" data-cost="bkk2">
         <div class="date"><div class="dd">25</div><div class="dm">– 28 Dez</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Unterkunft + Plan</div><h3>3 Nächte offen</h3></div><span class="pill bad" data-pill="b5">fehlt</span></div>
+          <div class="top"><div><div class="kind">Unterkunft + Plan</div><h3>3 Nächte offen</h3></div><span class="pill bad" data-pill>fehlt</span></div>
           <p>Letzter Abschnitt vor dem Rückflug ab Bangkok. Ideen unten, Favoriten mit ★ markieren.</p>
           <div class="money"><span class="amt" id="amtBkk2">–</span><span class="pill gold">Schätzung</span><span class="nights">3 Nächte</span></div>
         </div>
       </div>
 
-      <div class="stop">
+      <div class="stop" data-cost="flug">
         <div class="date"><div class="dd">28</div><div class="dm">Dez · Mo</div></div>
         <div class="card">
-          <div class="top"><div><div class="kind">Flug</div><h3>Bangkok → Deutschland</h3></div><span class="pill ok">bezahlt</span></div>
+          <div class="top"><div><div class="kind">Flug</div><h3>Bangkok → Deutschland</h3></div><span class="pill ok" data-pill>bezahlt</span></div>
           <p>Im Gesamtpreis von 763 € enthalten. Abflughafen (BKK oder DMK) im Ticket prüfen.</p>
         </div>
       </div>
@@ -475,7 +506,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     <div class="ledger">
       <div class="tablewrap">
       <table>
-        <thead><tr><th>Posten</th><th>Status</th><th class="r">Betrag</th><th></th></tr></thead>
+        <thead><tr><th>Posten</th><th>Status</th><th class="r">Betrag</th><th class="r">Notiz</th></tr></thead>
         <tbody id="ledgerBody"></tbody>
         <tfoot>
           <tr><td colspan="2">Bezahlt / gebucht</td><td class="r num" id="tPaid">–</td><td></td></tr>
@@ -519,7 +550,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 <script>
 (function(){
   const KEY='thailand-2026-v1', MIG='thailand-2026-migrated-v2';
-  const blank=()=>({checks:{},favs:{},est:{},custom:[],custom_items:{},removed:{}});
+  const blank=()=>({checks:{},favs:{},est:{},custom:[],custom_items:{},removed:{},status:{},notes:{}});
   const norm=s=>{const b=blank();s=s||{};for(const k in b){if(s[k]!=null)b[k]=JSON.parse(JSON.stringify(s[k]));}return b;};
   const loadLocal=()=>{try{const v=JSON.parse(localStorage.getItem(KEY));return v&&typeof v==='object'?v:null}catch(e){return null}};
   const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
@@ -558,6 +589,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     b.custom.forEach(c=>{if(!seen.has(c.name+'|'+c.amt))m.custom.push(c)});
     for(const g in b.custom_items){m.custom_items[g]=m.custom_items[g]||[];b.custom_items[g].forEach(v=>{if(!m.custom_items[g].includes(v))m.custom_items[g].push(v)})}
     for(const k in b.removed)if(b.removed[k])m.removed[k]=true;
+    for(const k in b.status)if(m.status[k]==null)m.status[k]=b.status[k];
+    for(const k in b.notes)if(!m.notes[k])m.notes[k]=b.notes[k];
     return m;
   }
   const eur=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
@@ -573,12 +606,41 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
       if(r>=0){el.textContent='Tag '+(1-d);sub.textContent='der Reise · '+r+' Tage bis Rückflug';}else{el.textContent='–';sub.textContent='Reise vorbei';}}
   })();
 
+  /* Notizen */
+  const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let editing=null, draft='';
+  const getNote=k=>{if(k.startsWith('cost:c')){const c=state.custom[Number(k.slice(6))];return c&&c.note||'';}return state.notes[k]||'';};
+  function setNote(k,v){
+    v=v.trim();
+    if(k.startsWith('cost:c')){const c=state.custom[Number(k.slice(6))];if(c){if(v)c.note=v;else delete c.note;}}
+    else if(v)state.notes[k]=v; else delete state.notes[k];
+  }
+  function noteView(k){
+    const n=getNote(k);
+    if(editing===k)return `<div class="noteedit"><textarea id="ne-${esc(k)}" data-note="${esc(k)}" placeholder="Kommentar, z. B. Buchungsnummer, Abholzeit, Ansprechpartner" aria-label="Kommentar">${esc(draft)}</textarea><div class="acts"><button type="button" class="save" data-nsave="${esc(k)}">Speichern</button><button type="button" data-ncancel>Abbrechen</button>${n?`<button type="button" class="drop" data-ndel="${esc(k)}">Kommentar löschen</button>`:''}</div></div>`;
+    return n?`<div class="note-text">${esc(n)}</div>`:'';
+  }
+  const noteBtn=k=>`<button type="button" class="notebtn" data-nedit="${esc(k)}">${getNote(k)?'Bearbeiten':'+ Notiz'}</button>`;
+  function wireNotes(root,rerender){
+    root.querySelectorAll('[data-nedit]').forEach(b=>b.addEventListener('click',()=>{editing=b.dataset.nedit;draft=getNote(editing);rerender();const t=document.getElementById('ne-'+editing);if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);}}));
+    root.querySelectorAll('textarea[data-note]').forEach(t=>{
+      t.addEventListener('input',()=>{draft=t.value;});
+      t.addEventListener('keydown',e=>{
+        if(e.key==='Escape'){editing=null;rerender();}
+        if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){setNote(t.dataset.note,t.value);editing=null;save();rerender();}
+      });
+    });
+    root.querySelectorAll('[data-nsave]').forEach(b=>b.addEventListener('click',()=>{setNote(b.dataset.nsave,draft);editing=null;save();rerender();}));
+    root.querySelectorAll('[data-ncancel]').forEach(b=>b.addEventListener('click',()=>{editing=null;rerender();}));
+    root.querySelectorAll('[data-ndel]').forEach(b=>b.addEventListener('click',()=>{setNote(b.dataset.ndel,'');editing=null;save();rerender();}));
+  }
+
   /* Costs */
   const fixed=[
-    {id:'flug',name:'Flug DE ⇄ Bangkok (09. + 28.12.)',when:'bezahlt',status:'paid',amt:763},
-    {id:'bkk1',name:'Unterkunft Bangkok 09.–14.12.',when:'Abbuchung Fr, 27.11.2026',status:'due',amt:164},
+    {id:'flug',name:'Flug DE ⇄ Bangkok (09. + 28.12.)',status:'paid',amt:763},
+    {id:'bkk1',name:'Unterkunft Bangkok 09.–14.12.',status:'due',dueText:'Abbuchung Fr, 27.11.2026',amt:164},
     {id:'flugHin',name:'Flug Bangkok → Krabi 14.12.',check:'b1',amt:55,est:true},
-    {id:'krabi',name:'Unterkunft Krabi 14.–19.12.',when:'bezahlt',status:'paid',amt:155},
+    {id:'krabi',name:'Unterkunft Krabi 14.–19.12.',status:'paid',amt:155},
     {id:'transferLanta',name:'Transfer Krabi → Koh Lanta 19.12.',check:'b7',amt:15,est:true},
     {id:'unterkunft',name:'Unterkunft Koh Lanta 19.–25.12. (6 Nächte)',check:'b4',amt:190,est:true},
     {id:'transferAirport',name:'Transfer Koh Lanta → Flughafen Krabi 25.12.',check:'b8',amt:15,est:true},
@@ -586,24 +648,48 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     {id:'bkk2',name:'Unterkunft 25.–28.12. (3 Nächte)',check:'b5',amt:100,est:true},
   ];
   const pillFor={paid:['ok','bezahlt'],booked:['ok','gebucht'],due:['warn','fest, offen'],missing:['bad','noch buchen']};
+  const STATUS=['paid','booked','due','missing'];
+  const statusLabel={paid:'bezahlt',booked:'gebucht',due:'Abbuchung offen',missing:'noch buchen'};
+  const fixedById=Object.fromEntries(fixed.map(f=>[f.id,f]));
+  const costByCheck=Object.fromEntries(fixed.filter(f=>f.check).map(f=>[f.check,f.id]));
+  function statusOf(f){
+    if(STATUS.includes(state.status[f.id]))return state.status[f.id];
+    if(f.check)return state.checks[f.check]?'booked':'missing';
+    return f.status;
+  }
+  function whenOf(f,st){
+    if(st==='due')return f.dueText||'Abbuchung offen';
+    return {paid:'bezahlt',booked:'gebucht · Betrag prüfen',missing:'noch offen'}[st];
+  }
+  function setStatus(id,st){
+    if(id.startsWith('c')){const c=state.custom[Number(id.slice(1))];if(c)c.status=st;}
+    else{
+      const f=fixedById[id];if(!f)return;
+      state.status[id]=st;
+      if(f.check)state.checks[f.check]=st!=='missing';
+    }
+    save();renderLedger();renderGroups();renderTimeline();
+  }
   function renderLedger(){
     const tb=document.getElementById('ledgerBody'); tb.innerHTML='';
-    const rows=fixed.map(f=>{const r={...f,amt:f.est&&state.est[f.id]!=null?state.est[f.id]:f.amt};if(f.check){const ok=!!state.checks[f.check];r.status=ok?'booked':'missing';r.when=ok?'gebucht · Betrag prüfen':'noch offen';}return r;}).concat(state.custom.map((c,i)=>({...c,id:'c'+i,custom:true,idx:i})));
+    const rows=fixed.map(f=>{const st=statusOf(f);return {...f,amt:f.est&&state.est[f.id]!=null?state.est[f.id]:f.amt,status:st,when:whenOf(f,st)};}).concat(state.custom.map((c,i)=>({...c,status:STATUS.includes(c.status)?c.status:'missing',id:'c'+i,custom:true,idx:i})));
     let paid=0,due=0,missing=0;
     rows.forEach(r=>{
       if(r.status==='paid'||r.status==='booked')paid+=r.amt; else if(r.status==='due')due+=r.amt; else missing+=r.amt;
       const tr=document.createElement('tr');
-      const [pc,pt]=pillFor[r.status];
-      tr.innerHTML=`<td><div class="name">${r.name}</div><div class="when">${r.when||''}</div></td>
-        <td><span class="pill ${pc}">${pt}</span></td>
-        <td class="r">${r.est?`<input type="number" min="0" step="5" id="est-${r.id}" value="${r.amt}" aria-label="Betrag ${r.name}"><span class="est">${r.status==='booked'?'Betrag':'Schätzung'}</span>`:`<span class="num" style="font-weight:600">${eur(r.amt)}</span>`}</td>
-        <td>${r.custom?`<button class="del" type="button" data-del="${r.idx}" aria-label="Posten löschen">✕</button>`:''}</td>`;
+      const nk='cost:'+r.id;
+      tr.innerHTML=`<td><div class="name">${esc(r.name)}</div><div class="when">${esc(r.when||'')}</div>${noteView(nk)}</td>
+        <td><select class="stsel st-${r.status}" id="st-${r.id}" data-sid="${r.id}" aria-label="Status ${esc(r.name)}">${STATUS.map(x=>`<option value="${x}"${x===r.status?' selected':''}>${statusLabel[x]}</option>`).join('')}</select></td>
+        <td class="r">${r.est?`<input type="number" min="0" step="5" id="est-${r.id}" value="${r.amt}" aria-label="Betrag ${esc(r.name)}"><span class="est">${r.status==='missing'?'Schätzung':'Betrag'}</span>`:`<span class="num" style="font-weight:600">${eur(r.amt)}</span>`}</td>
+        <td><div class="actions">${noteBtn(nk)}${r.custom?`<button class="del" type="button" data-del="${r.idx}" aria-label="Posten löschen">✕</button>`:''}</div></td>`;
       tb.appendChild(tr);
     });
     tb.querySelectorAll('input[type=number]').forEach(inp=>inp.addEventListener('change',e=>{
       const id=e.target.id.replace('est-',''); const v=Math.max(0,Number(e.target.value)||0); state.est[id]=v; save(); renderLedger();
     }));
-    tb.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{state.custom.splice(Number(b.dataset.del),1);save();renderLedger();}));
+    tb.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{state.custom.splice(Number(b.dataset.del),1);editing=null;save();renderLedger();}));
+    tb.querySelectorAll('select[data-sid]').forEach(sel=>sel.addEventListener('change',()=>setStatus(sel.dataset.sid,sel.value)));
+    wireNotes(tb,renderLedger);
     const total=paid+due+missing;
     document.getElementById('tPaid').textContent=eur(paid);
     document.getElementById('tDue').textContent=eur(due);
@@ -628,7 +714,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     e.preventDefault();
     const n=document.getElementById('costName').value.trim(), a=Number(document.getElementById('costAmt').value), s=document.getElementById('costStatus').value;
     if(!n||!(a>=0))return;
-    state.custom.push({name:n,amt:a,status:s,when:'eigener Posten'}); save(); e.target.reset(); renderLedger();
+    state.custom.push({name:n,amt:a,status:s}); save(); e.target.reset(); renderLedger();
   });
   renderLedger();
 
@@ -709,13 +795,17 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
       wrap.innerHTML=`<div class="ghead"><h3>${g.t}</h3><div style="display:flex;align-items:center;gap:10px"><span class="cnt">${done}/${items.length}</span><div class="mini"><i style="width:${items.length?done/items.length*100:0}%"></i></div></div></div>
         <ul class="items">${items.map(i=>`<li class="item${state.checks[i.id]?' done':''}">
           <input type="checkbox" id="${i.id}" ${state.checks[i.id]?'checked':''}>
-          <label for="${i.id}"><span class="l">${i.l}</span>${i.s?`<span class="s">${i.s}</span>`:''}</label>
-          ${i.due?`<span class="due${i.hard?' hard':''}">${i.due}</span>`:''}
-          ${i.custom?`<button class="rm" type="button" data-g="${g.id}" data-i="${i.idx}" aria-label="Eintrag löschen">✕</button>`:''}
+          <div class="body"><label for="${i.id}"><span class="l">${i.custom?esc(i.l):i.l}</span>${i.s?`<span class="s">${i.s}</span>`:''}</label>${noteView('chk:'+i.id)}</div>
+          <div class="side">${i.due?`<span class="due${i.hard?' hard':''}">${i.due}</span>`:''}${noteBtn('chk:'+i.id)}${i.custom?`<button class="rm" type="button" data-g="${g.id}" data-i="${i.idx}" aria-label="Eintrag löschen">✕</button>`:''}</div>
         </li>`).join('')}</ul>
         <form class="addline" data-g="${g.id}"><input placeholder="Eigenen Punkt hinzufügen" aria-label="Neuer Punkt ${g.t}"><button type="submit">+</button></form>`;
-      wrap.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.addEventListener('change',()=>{state.checks[cb.id]=cb.checked;save();renderGroups();renderLedger();if(typeof renderTimeline==='function')renderTimeline();}));
-      wrap.querySelectorAll('.rm').forEach(b=>b.addEventListener('click',()=>{state.custom_items[b.dataset.g].splice(Number(b.dataset.i),1);save();renderGroups();}));
+      wrap.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.addEventListener('change',()=>{state.checks[cb.id]=cb.checked;const cid=costByCheck[cb.id];if(cid)delete state.status[cid];save();renderGroups();renderLedger();if(typeof renderTimeline==='function')renderTimeline();}));
+      wrap.querySelectorAll('.rm').forEach(b=>b.addEventListener('click',()=>{
+        const gid=b.dataset.g,idx=Number(b.dataset.i),list=state.custom_items[gid];
+        for(let j=idx;j<list.length;j++){const from='chk:'+gid+'-c'+(j+1),to='chk:'+gid+'-c'+j;if(state.notes[from])state.notes[to]=state.notes[from];else delete state.notes[to];}
+        delete state.notes['chk:'+gid+'-c'+(list.length-1)];
+        list.splice(idx,1);editing=null;save();renderGroups();}));
+      wireNotes(wrap,renderGroups);
       wrap.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const v=e.target.querySelector('input').value.trim();if(!v)return;state.custom_items=state.custom_items||{};state.custom_items[g.id]=state.custom_items[g.id]||[];state.custom_items[g.id].push(v);save();renderGroups();});
       groupsEl.appendChild(wrap);
     });
@@ -729,14 +819,15 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   });
 
   function renderTimeline(){
-    document.querySelectorAll('[data-check]').forEach(el=>{
-      const done=!!state.checks[el.dataset.check];
-      el.classList.toggle('open',!done);
+    document.querySelectorAll('[data-cost]').forEach(el=>{
+      const f=fixedById[el.dataset.cost];if(!f)return;
+      const st=statusOf(f);
+      el.classList.toggle('open',st==='missing');
       const pill=el.querySelector('[data-pill]');
       if(!pill)return;
-      if(!pill.dataset.orig)pill.dataset.orig=pill.textContent;
-      pill.className='pill '+(done?'ok':'bad');
-      pill.textContent=done?'gebucht':pill.dataset.orig;
+      if(!pill.dataset.orig){pill.dataset.orig=pill.textContent;pill.dataset.origbad=pill.classList.contains('bad')?'1':'';}
+      pill.className='pill '+({paid:'ok',booked:'ok',due:'warn',missing:'bad'}[st]);
+      pill.textContent=st==='missing'?(pill.dataset.origbad?pill.dataset.orig:'noch buchen'):(st==='due'?(f.dueText?'Abbuchung 27.11.':'Abbuchung offen'):statusLabel[st]);
     });
   }
   renderTimeline();
