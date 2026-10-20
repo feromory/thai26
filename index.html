@@ -523,7 +523,9 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   const norm=s=>{const b=blank();s=s||{};for(const k in b){if(s[k]!=null)b[k]=JSON.parse(JSON.stringify(s[k]));}return b;};
   const loadLocal=()=>{try{const v=JSON.parse(localStorage.getItem(KEY));return v&&typeof v==='object'?v:null}catch(e){return null}};
   const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
-  let state=norm(loadLocal());
+  /* Startstand vom 20.10.2026, gilt bis zum ersten eigenen Haken in diesem Browser */
+  const SEED={"checks":{"b1":true,"b2":true,"b3":false,"b4":true,"g1":true,"g2":true,"h1":true,"k1":true,"p1":true,"p3":true,"p4":true,"p5":true,"p6":false},"custom":[],"custom_items":{},"est":{"flugHin":100,"flugRueck":100,"unterkunft":190},"favs":{},"removed":{}};
+  let state=norm(loadLocal()||SEED);
   let dbRef=null, writeTimer=null, writing=false, again=false, dirty=false, lastWritten='';
   const syncEl=document.getElementById('sync'), syncText=document.getElementById('syncText');
   function setSync(kind){
