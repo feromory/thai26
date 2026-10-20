@@ -86,11 +86,11 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 /* progress */
 .progress{display:grid;gap:8px}
 .bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;display:flex}
-.bar i{display:block;height:100%}
-.bar .p{background:var(--ok)}.bar .d{background:var(--warn)}.bar .m{background:var(--bad);opacity:.7}
+.bar i{display:block;height:100%;transition:width .3s ease}
+.bar .p{background:var(--ok)}.bar .b{background:var(--sea)}.bar .d{background:var(--warn)}.bar .m{background:var(--bad);opacity:.7}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:var(--muted)}
 .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
-.legend .p::before{background:var(--ok)}.legend .d::before{background:var(--warn)}.legend .m::before{background:var(--bad)}
+.legend .p::before{background:var(--ok)}.legend .b::before{background:var(--sea)}.legend .d::before{background:var(--warn)}.legend .m::before{background:var(--bad)}
 
 /* section head */
 .sec{display:grid;gap:14px}
@@ -142,7 +142,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .ledger td.r,.ledger th.r{text-align:right}
 .ledger .name{font-weight:600}
 .ledger .when{font-size:.78rem;color:var(--muted)}
-.ledger tfoot td{font-weight:700;background:var(--bg2)}
+.ledger tfoot td{font-weight:600;background:var(--bg2);padding-block:8px}
+.ledger tfoot tr.sum td{font-weight:800;font-size:1rem;border-top:2px solid var(--line)}
 .ledger input[type=number]{width:92px;text-align:right;font:inherit;font-family:var(--mono);font-weight:600;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);color:var(--fg)}
 .est{font-size:.68rem;color:var(--muted);display:block}
 .ledger .del{border:0;background:transparent;color:var(--muted);padding:2px 6px;border-radius:6px;font-size:.9rem}
@@ -231,7 +232,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .srcs{font-size:.72rem;color:var(--muted);line-height:1.6}
 .srcs a{color:var(--sea)}
 .stsel{appearance:none;-webkit-appearance:none;font:600 .72rem var(--body);letter-spacing:.02em;padding:5px 26px 5px 10px;border-radius:99px;border:1px solid transparent;cursor:pointer;background-repeat:no-repeat;background-size:5px 5px,5px 5px;background-position:calc(100% - 13px) 50%,calc(100% - 8px) 50%;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%)}
-.stsel.st-paid,.stsel.st-booked{background-color:var(--ok-soft);color:var(--ok)}
+.stsel.st-paid{background-color:var(--ok-soft);color:var(--ok)}
+.stsel.st-booked{background-color:var(--sea-soft);color:var(--sea)}
 .stsel.st-due{background-color:var(--warn-soft);color:var(--warn)}
 .stsel.st-missing{background-color:var(--bad-soft);color:var(--bad)}
 .stsel:hover{border-color:currentColor}
@@ -318,14 +320,14 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   <section class="sec">
     <div class="sync" id="sync" data-state="local" role="status"><span class="dot"></span><span id="syncText">Nur in diesem Browser gespeichert</span></div>
     <div class="kpis">
-      <div class="kpi paid"><div class="eyebrow">Bezahlt / gebucht</div><div class="v num" id="kPaid">–</div><div class="sub">Flüge, Krabi, Koh Lanta</div></div>
-      <div class="kpi due"><div class="eyebrow">Wird abgebucht</div><div class="v num" id="kDue">–</div><div class="sub">Bangkok, 27.11.</div></div>
-      <div class="kpi missing"><div class="eyebrow">Noch zu buchen</div><div class="v num" id="kMissing">–</div><div class="sub">Schätzung, editierbar</div></div>
+      <div class="kpi paid"><div class="eyebrow">Bezahlt</div><div class="v num" id="kPaid">–</div><div class="sub" id="kPaidSub">–</div></div>
+      <div class="kpi due"><div class="eyebrow">Gebucht, noch zu zahlen</div><div class="v num" id="kOpen">–</div><div class="sub" id="kOpenSub">–</div></div>
+      <div class="kpi missing"><div class="eyebrow">Noch zu buchen</div><div class="v num" id="kMissing">–</div><div class="sub" id="kMissingSub">–</div></div>
       <div class="kpi"><div class="eyebrow">Gesamt geplant</div><div class="v num" id="kTotal">–</div><div class="sub" id="kPerNight">–</div></div>
     </div>
     <div class="progress">
-      <div class="bar"><i class="p" id="bP"></i><i class="d" id="bD"></i><i class="m" id="bM"></i></div>
-      <div class="legend"><span class="p">bezahlt</span><span class="d">fest, Abbuchung offen</span><span class="m">noch nicht gebucht</span></div>
+      <div class="bar"><i class="p" id="bP"></i><i class="b" id="bB"></i><i class="d" id="bD"></i><i class="m" id="bM"></i></div>
+      <div class="legend"><span class="p">bezahlt</span><span class="b">gebucht</span><span class="d">Abbuchung offen</span><span class="m">noch zu buchen</span></div>
     </div>
   </section>
 
@@ -509,10 +511,12 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
         <thead><tr><th>Posten</th><th>Status</th><th class="r">Betrag</th><th class="r">Notiz</th></tr></thead>
         <tbody id="ledgerBody"></tbody>
         <tfoot>
-          <tr><td colspan="2">Bezahlt / gebucht</td><td class="r num" id="tPaid">–</td><td></td></tr>
-          <tr><td colspan="2">Fest gebucht, Abbuchung offen</td><td class="r num" id="tDue">–</td><td></td></tr>
+          <tr><td colspan="2">Bezahlt</td><td class="r num" id="tPaid">–</td><td></td></tr>
+          <tr><td colspan="2">Gebucht, noch nicht bezahlt</td><td class="r num" id="tBooked">–</td><td></td></tr>
+          <tr><td colspan="2">Abbuchung offen</td><td class="r num" id="tDue">–</td><td></td></tr>
           <tr><td colspan="2">Noch zu buchen (Schätzung)</td><td class="r num" id="tMissing">–</td><td></td></tr>
-          <tr><td colspan="2">Gesamt</td><td class="r num" id="tTotal">–</td><td></td></tr>
+          <tr class="sum"><td colspan="2">Gesamt</td><td class="r num" id="tTotal">–</td><td></td></tr>
+          <tr><td colspan="2">Davon noch zu zahlen</td><td class="r num" id="tOpen">–</td><td></td></tr>
         </tfoot>
       </table>
       </div>
@@ -670,45 +674,56 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     }
     save();renderLedger();renderGroups();renderTimeline();
   }
+  function costRows(){
+    return fixed.map(f=>{const st=statusOf(f);return {...f,amt:f.est&&state.est[f.id]!=null?state.est[f.id]:f.amt,status:st,when:whenOf(f,st)};})
+      .concat(state.custom.map((c,i)=>({...c,amt:Number(c.amt)||0,status:STATUS.includes(c.status)?c.status:'missing',id:'c'+i,custom:true,idx:i,editable:true})));
+  }
+  function renderTotals(rows){
+    const sum={paid:0,booked:0,due:0,missing:0},cnt={paid:0,booked:0,due:0,missing:0};
+    rows.forEach(r=>{sum[r.status]+=r.amt;cnt[r.status]++;});
+    const total=sum.paid+sum.booked+sum.due+sum.missing, open=sum.booked+sum.due;
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    const posten=n=>n===1?'1 Posten':n+' Posten';
+    set('tPaid',eur(sum.paid));set('tBooked',eur(sum.booked));set('tDue',eur(sum.due));set('tMissing',eur(sum.missing));
+    set('tTotal',eur(total));set('tOpen',eur(open+sum.missing));
+    set('kPaid',eur(sum.paid));set('kPaidSub',posten(cnt.paid));
+    set('kOpen',eur(open));set('kOpenSub',sum.due?'davon '+eur(sum.due)+' Abbuchung offen':posten(cnt.booked));
+    set('kMissing',eur(sum.missing));set('kMissingSub',cnt.missing?'Schätzung, '+posten(cnt.missing):'alles gebucht');
+    set('kTotal',eur(total));set('kPerNight','noch zu zahlen '+eur(open+sum.missing)+' · ≈ '+eur(total/19)+' pro Nacht');
+    const pct=x=>total?(x/total*100)+'%':'0%';
+    document.getElementById('bP').style.width=pct(sum.paid);document.getElementById('bB').style.width=pct(sum.booked);
+    document.getElementById('bD').style.width=pct(sum.due);document.getElementById('bM').style.width=pct(sum.missing);
+    const g=id=>rows.find(r=>r.id===id);
+    const pre=r=>r.status==='missing'?'≈ ':'';
+    [['amtFlugHin','flugHin'],['amtFlugRueck','flugRueck'],['amtUnterkunft','unterkunft'],['amtTransferLanta','transferLanta'],['amtTransferAirport','transferAirport'],['amtBkk2','bkk2']]
+      .forEach(([el,id])=>{const r=g(id);set(el,pre(r)+eur(r.amt));});
+  }
+  function setAmount(id,v){
+    if(id.startsWith('c')){const c=state.custom[Number(id.slice(1))];if(c)c.amt=v;}
+    else state.est[id]=v;
+  }
   function renderLedger(){
     const tb=document.getElementById('ledgerBody'); tb.innerHTML='';
-    const rows=fixed.map(f=>{const st=statusOf(f);return {...f,amt:f.est&&state.est[f.id]!=null?state.est[f.id]:f.amt,status:st,when:whenOf(f,st)};}).concat(state.custom.map((c,i)=>({...c,status:STATUS.includes(c.status)?c.status:'missing',id:'c'+i,custom:true,idx:i})));
-    let paid=0,due=0,missing=0;
+    const rows=costRows();
     rows.forEach(r=>{
-      if(r.status==='paid'||r.status==='booked')paid+=r.amt; else if(r.status==='due')due+=r.amt; else missing+=r.amt;
       const tr=document.createElement('tr');
       const nk='cost:'+r.id;
+      const canEdit=(r.est||r.editable)&&r.status!=='paid';
       tr.innerHTML=`<td><div class="name">${esc(r.name)}</div><div class="when">${esc(r.when||'')}</div>${noteView(nk)}</td>
         <td><select class="stsel st-${r.status}" id="st-${r.id}" data-sid="${r.id}" aria-label="Status ${esc(r.name)}">${STATUS.map(x=>`<option value="${x}"${x===r.status?' selected':''}>${statusLabel[x]}</option>`).join('')}</select></td>
-        <td class="r">${r.est?`<input type="number" min="0" step="5" id="est-${r.id}" value="${r.amt}" aria-label="Betrag ${esc(r.name)}"><span class="est">${r.status==='missing'?'Schätzung':'Betrag'}</span>`:`<span class="num" style="font-weight:600">${eur(r.amt)}</span>`}</td>
+        <td class="r">${canEdit?`<input type="number" min="0" step="5" inputmode="decimal" id="est-${r.id}" value="${r.amt}" aria-label="Betrag ${esc(r.name)}"><span class="est">${r.status==='missing'?'Schätzung':'Betrag'}</span>`:`<span class="num" style="font-weight:600">${eur(r.amt)}</span>${r.status==='paid'&&(r.est||r.editable)?'<span class="est">bezahlt, fest</span>':''}`}</td>
         <td><div class="actions">${noteBtn(nk)}${r.custom?`<button class="del" type="button" data-del="${r.idx}" aria-label="Posten löschen">✕</button>`:''}</div></td>`;
       tb.appendChild(tr);
     });
-    tb.querySelectorAll('input[type=number]').forEach(inp=>inp.addEventListener('change',e=>{
-      const id=e.target.id.replace('est-',''); const v=Math.max(0,Number(e.target.value)||0); state.est[id]=v; save(); renderLedger();
-    }));
+    tb.querySelectorAll('input[type=number]').forEach(inp=>{
+      const id=inp.id.replace('est-','');
+      inp.addEventListener('input',()=>{const v=Math.max(0,Number(inp.value)||0);setAmount(id,v);save();renderTotals(costRows());});
+      inp.addEventListener('change',()=>{const v=Math.max(0,Number(inp.value)||0);setAmount(id,v);save();renderLedger();});
+    });
     tb.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{state.custom.splice(Number(b.dataset.del),1);editing=null;save();renderLedger();}));
     tb.querySelectorAll('select[data-sid]').forEach(sel=>sel.addEventListener('change',()=>setStatus(sel.dataset.sid,sel.value)));
     wireNotes(tb,renderLedger);
-    const total=paid+due+missing;
-    document.getElementById('tPaid').textContent=eur(paid);
-    document.getElementById('tDue').textContent=eur(due);
-    document.getElementById('tMissing').textContent=eur(missing);
-    document.getElementById('tTotal').textContent=eur(total);
-    document.getElementById('kPaid').textContent=eur(paid);
-    document.getElementById('kDue').textContent=eur(due);
-    document.getElementById('kMissing').textContent=eur(missing);
-    document.getElementById('kTotal').textContent=eur(total);
-    document.getElementById('kPerNight').textContent='≈ '+eur(total/19)+' pro Nacht, alles inkl.';
-    const pct=x=>total?(x/total*100)+'%':'0%';
-    document.getElementById('bP').style.width=pct(paid);document.getElementById('bD').style.width=pct(due);document.getElementById('bM').style.width=pct(missing);
-    const g=id=>rows.find(r=>r.id===id);
-    document.getElementById('amtFlugHin').textContent='≈ '+eur(g('flugHin').amt);
-    document.getElementById('amtFlugRueck').textContent='≈ '+eur(g('flugRueck').amt);
-    document.getElementById('amtUnterkunft').textContent='≈ '+eur(g('unterkunft').amt);
-    document.getElementById('amtTransferLanta').textContent='≈ '+eur(g('transferLanta').amt);
-    document.getElementById('amtTransferAirport').textContent='≈ '+eur(g('transferAirport').amt);
-    document.getElementById('amtBkk2').textContent='≈ '+eur(g('bkk2').amt);
+    renderTotals(rows);
   }
   document.getElementById('addCost').addEventListener('submit',e=>{
     e.preventDefault();
@@ -826,7 +841,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
       const pill=el.querySelector('[data-pill]');
       if(!pill)return;
       if(!pill.dataset.orig){pill.dataset.orig=pill.textContent;pill.dataset.origbad=pill.classList.contains('bad')?'1':'';}
-      pill.className='pill '+({paid:'ok',booked:'ok',due:'warn',missing:'bad'}[st]);
+      pill.className='pill '+({paid:'ok',booked:'sea',due:'warn',missing:'bad'}[st]);
       pill.textContent=st==='missing'?(pill.dataset.origbad?pill.dataset.orig:'noch buchen'):(st==='due'?(f.dueText?'Abbuchung 27.11.':'Abbuchung offen'):statusLabel[st]);
     });
   }
